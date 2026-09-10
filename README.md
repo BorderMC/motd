@@ -16,3 +16,15 @@ To avoid controversy or inappropriate sentences, the guideline rules below will 
 
 - No advertisements
 - No slurs
+
+## How to contribute
+
+- Clone project using `git clone https://github.com/BorderMC/motd.git`
+- Read [the rules](#rules)
+- Edit [edit-me.txt](edit-me.txt)
+- Make a branch with `git branch <yourusername>/<description>` for example `git branch pernio/nether-reset-info`
+- Switch to branch with `git switch <yourusername>/<description>` for example `git switch pernio/nether-reset-info`
+- Add all files to git using `git add .`
+- Commit message using `git commit -m "<message>"` for example `git commit -m "Added new motd message"`
+- Push using `git push --set-upstream origin <yourusername>/<description>` for example `git push --set-upstream origin pernio/nether-reset-info`
+- Create a pull request in <https://github.com/BorderMC/motd/pulls>
