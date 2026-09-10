@@ -1,25 +1,29 @@
-name: Update main.conf
+name: Update main.conf in PR
 
 on:
   pull_request_target:
     types:
-      - closed
+      - opened
+      - synchronize
+      - reopened
     branches:
       - main
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   update-main-conf:
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out main
+      - name: Check out PR branch
         uses: actions/checkout@v4
         with:
-          ref: main
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -30,7 +34,10 @@ jobs:
           from pathlib import Path
 
           def read_setting(text, key):
-              match = re.search(rf'(?m)^{re.escape(key)}:\s*"(.*)"\s*$', text)
+              match = re.search(
+                  rf'(?m)^{re.escape(key)}:\s*"(.*)"\s*$',
+                  text
+              )
               if not match:
                   raise SystemExit(f'Missing "{key}" in settings.yml')
               return match.group(1)
@@ -44,13 +51,17 @@ jobs:
 
           messages = [
               line.strip()
-              for line in Path('edit-me.txt').read_text(encoding='utf-8').splitlines()
+              for line in Path('edit-me.txt')
+              .read_text(encoding='utf-8')
+              .splitlines()
               if line.strip()
           ]
 
           motds = ['motds=[']
+
           for index, message in enumerate(messages):
               description = description_template.replace('{motd}', message)
+
               motds.extend([
                   '    {',
                   f'        line1="{conf_quote(title)}"',
@@ -58,17 +69,20 @@ jobs:
                   '        icon=random',
                   f'    }}{"," if index < len(messages) - 1 else ""}',
               ])
+
           motds.append(']')
           motds_block = '\n'.join(motds)
 
           config_path = Path('main.conf')
           config = config_path.read_text(encoding='utf-8')
+
           updated = re.sub(
               r'(?s)motds=\[\s*.*?\n\]',
               motds_block,
               config,
               count=1,
           )
+
           if updated == config:
               print('main.conf is already up to date')
           else:
@@ -76,9 +90,9 @@ jobs:
               print('Updated main.conf')
           PY
 
-      - name: Commit generated main.conf
+      - name: Commit updated main.conf
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: Update main.conf from edit-me.txt
-          branch: main
+          commit_message: "chore: update generated main.conf"
+          branch: ${{ github.event.pull_request.head.ref }}
           file_pattern: main.conf
