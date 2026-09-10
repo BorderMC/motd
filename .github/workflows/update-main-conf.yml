@@ -1,7 +1,7 @@
 name: Update main.conf
 
 on:
-  pull_request:
+  pull_request_target:
     types:
       - closed
     branches:
@@ -21,6 +21,7 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate main.conf
         run: |
@@ -79,4 +80,5 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Update main.conf from edit-me.txt
+          branch: main
           file_pattern: main.conf
