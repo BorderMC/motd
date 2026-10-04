@@ -1,6 +1,9 @@
-name: Update main.conf in PR
+name: Update main.conf
 
 on:
+  push:
+    branches-ignore:
+      - main
   pull_request_target:
     types:
       - opened
@@ -15,11 +18,16 @@ permissions:
 
 jobs:
   update-main-conf:
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out branch
+        if: github.event_name == 'push'
+        uses: actions/checkout@v4
+
       - name: Check out PR branch
+        if: github.event_name == 'pull_request_target'
         uses: actions/checkout@v4
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
@@ -90,7 +98,15 @@ jobs:
               print('Updated main.conf')
           PY
 
-      - name: Commit updated main.conf
+      - name: Commit updated main.conf on branch
+        if: github.event_name == 'push'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update generated main.conf"
+          file_pattern: main.conf
+
+      - name: Commit updated main.conf on PR branch
+        if: github.event_name == 'pull_request_target'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: update generated main.conf"
