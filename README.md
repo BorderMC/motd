@@ -6,7 +6,7 @@ This is a collection of all messages that are displayed in the server list. The 
 
 ## Pull requests
 
-We accept your submissions! You may clone this repository, add a new line in [edit-me.txt](edit-me.txt) and create a pull request in <https://github.com/BorderMC/motd/pulls>.
+We accept your submissions! You may fork this repository, add a new line in [edit-me.txt](edit-me.txt) and create a pull request in <https://github.com/BorderMC/motd/pulls>.
 
 When the pull request gets approved, Github will update [main.conf](main.conf) to match [edit-me.txt](edit-me.txt).
 
@@ -19,7 +19,8 @@ To avoid controversy or inappropriate sentences, the guideline rules below will 
 
 ## How to contribute
 
-- Clone project using `git clone https://github.com/BorderMC/motd.git`
+- Fork this repository
+- Clone your fork using `git clone https://github.com/<yourusername>/motd.git`
 - Read [the rules](#rules)
 - Edit [edit-me.txt](edit-me.txt)
 - Make a branch with `git branch <yourusername>/<description>` for example `git branch pernio/nether-reset-info`
